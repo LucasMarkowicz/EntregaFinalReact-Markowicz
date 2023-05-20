@@ -1,26 +1,34 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ItemDetail from "./ItemDetail.jsx";
-import { getFirestore, doc, getDoc} from 'firebase/firestore'
 
 export default function ItemDetailContainer() {
-    let { id } = useParams()
-    const [data, setData] = useState({});
+  const { pid } = useParams();
+  const [data, setData] = useState(null);
 
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/products/${pid}`);
+        const json = await response.json();
+        if (response.ok) {
+          setData(json.product);
+        } else {
+          console.error(json);
+        }
+      } catch (error) {
+        console.error('Error fetching product:', error);
+      }
+    };
 
-    useEffect(() => {
-        const querydb = getFirestore();
-        const queryDoc = doc(querydb, 'apple', id);
-        getDoc(queryDoc)
-        .then(res => setData({id: res.id, ...res.data()}))
-    }, [id])
+    fetchProduct();
+  }, [pid]);
 
-return (
-
+  return (
     <div>
-         <ItemDetail data={data}></ItemDetail>
+      {data ? <ItemDetail data={data} /> : <p>Loading...</p>}
     </div>
- )
+  );
 }
+
 

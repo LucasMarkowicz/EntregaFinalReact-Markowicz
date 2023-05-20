@@ -3,15 +3,14 @@ import ItemCount from './ItemCount.jsx';
 import { Link } from 'react-router-dom';
 import { useCartContext } from '../context/CartContext.jsx'
 
-export default function ItemDetail({ data = [] }) {
+export default function ItemDetail({ data }) {
   const [goToCart, setGoToCart] = useState(false);
   const { addProduct } = useCartContext();
 
-
   const onAdd = (quantity) => {
-  setGoToCart(true);
-  addProduct(data, quantity);
-  }
+    setGoToCart(true);
+    addProduct(data, quantity);
+  };
 
   return (
     <div>
@@ -21,24 +20,26 @@ export default function ItemDetail({ data = [] }) {
           <div className="row g-0">
             <div className="col-md-4">
               <img
-                src={data.image}
+                src={data.thumbnail}
                 className="img-fluid rounded-start"
                 alt="..."
               />
             </div>
             <div className="col-md-8">
               <div className="card-body">
-                <h5 className="card-title">{data.name}</h5>
+                <h5 className="card-title">{data.title}</h5>
                 <p className="card-title">Price: {data.price}$</p>
                 <p className="card-title">Category: {data.category}</p>
-                <p className="card-text">Description:{data.description}</p>
-                <p>{data.countInStock > 0 ? "In stock" : "Unavailable"}</p>
+                <p className="card-text">Description: {data.description}</p>
+                <p>{data.stock > 0 ? "In stock" : "Unavailable"}</p>
                 <div></div>
-                {
-                  goToCart
-                    ? <button className="btn btn-primary"><Link to='/cart'>Ir al carrito</Link></button>
-                    : <ItemCount initial={1} stock={data.countInStock} onAdd={onAdd} />
-                }
+                {goToCart ? (
+                  <button className="btn btn-primary">
+                    <Link to="/cart">Ir al carrito</Link>
+                  </button>
+                ) : (
+                  <ItemCount initial={1} stock={data.stock} onAdd={onAdd} />
+                )}
               </div>
             </div>
           </div>
@@ -47,3 +48,4 @@ export default function ItemDetail({ data = [] }) {
     </div>
   );
 }
+

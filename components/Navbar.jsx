@@ -22,10 +22,7 @@ export default function Navbar() {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div
-            className="collapse navbar-collapse"
-            id="navbarNav"
-          >
+          <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ml 500 ">
               <li className="nav-item">
                 <NavLink className="nav-link " to="/">
@@ -33,32 +30,22 @@ export default function Navbar() {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link " to="/Iphones">
-                  IPHONES
+                <NavLink className="nav-link " to="/remeras">
+                  REMERAS
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link " to="/Ipads">
-                  IPADS
+                <NavLink className="nav-link " to="/pantalones">
+                  PANTALONES
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link " to="/Macbooks">
-                  MACBOOKS
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className="nav-link " to="/Airpods">
-                  AIRPODS
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className="nav-link " to="/Watches">
-                  WATCHES
+                <NavLink className="nav-link " to="/buzos">
+                  BUZOS
                 </NavLink>
               </li>
             </ul>
-          </div>          
+          </div>
           <Cartwidget></Cartwidget>
         </div>
       </nav>

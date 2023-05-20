@@ -11,7 +11,7 @@ export default function CartProvider({ children }) {
     if (isInCart(item.id)) {
       setCart(
         cart.map((product) => {
-          return product.id === item.id
+          return product.id === item._id
             ? { ...product, quantity: product.quantity + quantity }
             : product;
         })
@@ -25,9 +25,9 @@ export default function CartProvider({ children }) {
 
   const clearCart = () => setCart([]);
   const isInCart = (id) =>
-    cart.find((product) => product.id === id) ? true : false;
+    cart.find((product) => product._id === id) ? true : false;
   const removeProduct = (id) =>
-    setCart(cart.filter((product) => product.id !== id));
+    setCart(cart.filter((product) => product._id !== id));
   const totalPrice = () => {
     return cart.reduce((prev, act) => prev + act.quantity * act.price, 0);
   };

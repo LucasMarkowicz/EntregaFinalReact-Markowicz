@@ -2,39 +2,47 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import ItemList from "./ItemList.jsx";
 import { useState, useEffect } from "react";
-import {
-  getFirestore,
-  getDocs,
-  collection,
-  query,
-  where,
-} from 'firebase/firestore';
 
 export default function Categoria() {
   let { category } = useParams();
   let [data, setData] = useState([]);
 
   useEffect(() => {
-    const querydb = getFirestore();
-    const queryCollection = collection(querydb, 'apple');
-    if (category) {
-      const queryFilter = query(
-        queryCollection,
-        where('category', '==', category)
-      )
-      getDocs(queryFilter)
-      .then((res) =>
-        setData(
-          res.docs.map(product => ({ id: product.id, ...product.data() }))
-        )
-      )
-    } else {
-      getDocs(queryCollection).then((res) =>
-        setData(
-          res.docs.map((product) => ({ id: product.id, ...product.data() }))
-        )
-      )
-    }
+
+    const createCart = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/carts', {
+          method: 'POST',
+        });
+        const cart = await response.json();
+        setCartId(cart.cid); // Almacenar el cid del carrito en la variable de estado
+      } catch (error) {
+        console.error('Error creating cart:', error);
+      }
+    };
+    createCart();
+
+
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/products/json');
+        const products = await response.json();
+        if (category) {
+          const filteredProducts = products.filter(
+            (product) => product.category === category
+          );
+          setData(filteredProducts);
+        } else {
+          setData(products);
+        }
+            console.log(products); // Imprimir el arreglo de productos en la consola
+
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
   }, [category]);
 
   return (

@@ -1,52 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import ItemCart from "./ItemCart.jsx";
 import { useCartContext } from "../context/CartContext";
-import { Link } from 'react-router-dom';
-import ItemCart from "./ItemCart.jsx"
-import { getFirestore, addDoc, collection} from 'firebase/firestore'
-
 
 export default function Cart() {
+  const { cart, totalPrice } = useCartContext();
+  const [cartData, setCartData] = useState(null);
 
-  const {cart, totalPrice} = useCartContext();
+  useEffect(() => {
+    const fetchCartData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/carts/644129333f240a1ac4832456/json` // Reemplaza :cid con el ID del carrito correspondiente
+        );
+        const json = await response.json();
+        if (response.ok) {
+          setCartData(json);
+        } else {
+          console.error(json);
+        }
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      }
+    };
 
-  const order = {
-    buyer: {
-      name: 'Lucas',
-      email: 'luckpelle1@gmail.com',
-      phone: '123456789',
-      address: 'Calle 123'
-    },
-    items: cart.map(apple => ({ id: apple.id, name: apple.name, price: apple.price, quantity: apple.quantity})),
-    total: totalPrice()
-  }
+    fetchCartData();
+  }, []);
 
   const handleClick = () => {
-    const db = getFirestore();
-    const ordersCollection = collection(db, 'orders');
-    addDoc(ordersCollection, order)
-    .then(({ id }) => console.log("Su id de compra es" + id))
-  }
+    // Tu lógica para la compra
+  };
 
-  if (cart.length === 0) {
-    return(
+  if (!cartData || cartData.productArray.length === 0) {
+    return (
       <div className="text-left mt-3">
         <p>Your cart is empty</p>
-        <button className="btn btn-primary"><Link to='/'> Continue shopping
-        </Link></button>
+        <button className="btn btn-primary">
+          <Link to="/">Continue shopping</Link>
+        </button>
       </div>
-    )
+    );
   }
 
   return (
     <div>
       <h2 className="text-center mt-5 mb-5">Your Cart</h2>
       <div>
-        
-        {cart.map(product => <ItemCart key={product.id} product={product} /> )}
-        <h5 className="container">
-          Total buy: ${totalPrice()}
-        </h5>
-        <div className="container"><button className="buyNowButton btn btn-primary" onClick={handleClick}>Buy now</button></div>
+        {cartData.productArray.map((product) => (
+          <ItemCart key={product.code} product={product} />
+        ))}
+        <h5 className="container">Total buy: ${cartData.total}</h5>
+        <div className="container">
+          <button className="buyNowButton btn btn-primary" onClick={handleClick}>
+            Buy now
+          </button>
+        </div>
       </div>
     </div>
   );
